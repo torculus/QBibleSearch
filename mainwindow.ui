@@ -26,7 +26,7 @@
          <string/>
         </property>
         <property name="placeholderText">
-         <string>Search for term or Strong's number</string>
+         <string>Search for a term or phrase</string>
         </property>
        </widget>
       </item>
