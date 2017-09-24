@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/bibles">
+        <file>NHEB.txt</file>
+        <file>KJV.txt</file>
+    </qresource>
+</RCC>
