@@ -3,4 +3,9 @@
         <file>NHEB.txt</file>
         <file>KJV.txt</file>
     </qresource>
+    <qresource prefix="/icon">
+        <file>QBibleSearch.icns</file>
+        <file>QBibleSearch.ico</file>
+        <file>QBibleSearch_256x256.png</file>
+    </qresource>
 </RCC>

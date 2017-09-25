@@ -20,6 +20,8 @@ private slots:
 
     void on_lineEdit_2_returnPressed();
 
+    void on_actionAbout_QBibleSearch_triggered();
+
 private:
     Ui::MainWindow *ui;
 };

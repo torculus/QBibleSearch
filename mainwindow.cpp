@@ -21,8 +21,8 @@ MainWindow::MainWindow(QWidget *parent) :
     //separate the New Testament
     ui->comboBox_2->insertSeparator(72);
 
-    // prevent stretching the window vertically
-    this->setMaximumHeight(height());
+    // prevent resizing the window
+    this->setFixedSize(width(), height());
 }
 
 MainWindow::~MainWindow()
@@ -270,8 +270,17 @@ void searchBible(Ui::MainWindow *ui) {
         // create the search results window
         QDialog *sr = new QDialog();
 
-        QString window_text = QString(\
-                    "%1 results found for \"" + search_term +"\" in \"" + translation +": "+ book +"\"").arg(occurrences);
+        QString window_text;
+
+        if (occurrences == 1) {
+            // use proper English grammar
+            window_text = QString("%1 result found for \"" + search_term \
+                                          + "\" in \"" + translation +": "+ book +"\"").arg(occurrences);
+        } else {
+            window_text = QString("%1 results found for \"" + search_term \
+                                          +"\" in \"" + translation +": "+ book +"\"").arg(occurrences);
+        }
+
         sr->setWindowTitle(window_text);
 
         sr->setLayout(new QVBoxLayout());
@@ -300,4 +309,22 @@ void MainWindow::on_lineEdit_returnPressed()
 void MainWindow::on_lineEdit_2_returnPressed()
 {
     searchBible(ui);
+}
+
+void MainWindow::on_actionAbout_QBibleSearch_triggered()
+{
+    QDialog *about_window = new QDialog();
+    about_window->setWindowTitle("About QBibleSearch");
+    about_window->setLayout(new QVBoxLayout());
+
+    QTextBrowser *qtb = new QTextBrowser();
+
+    qtb->setText("QBibleSearch (c) 2017\n\nSend bug reports to Ben Osenbach (20175597+torculus@users.noreply.github.com)");
+
+    about_window->layout()->addWidget(qtb);
+
+    about_window->setMaximumWidth(300);
+    about_window->setMaximumHeight(300);
+
+    about_window->show();
 }
