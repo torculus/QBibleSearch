@@ -319,7 +319,7 @@ void MainWindow::on_actionAbout_QBibleSearch_triggered()
 
     QTextBrowser *qtb = new QTextBrowser();
 
-    qtb->setText("QBibleSearch (c) 2017\n\nSend bug reports to Ben Osenbach (20175597+torculus@users.noreply.github.com)");
+    qtb->setText("QBibleSearch (c) 2017\n\nSend bug reports to Ben Osenbach (bsosenba@gmail.com)");
 
     about_window->layout()->addWidget(qtb);
 
