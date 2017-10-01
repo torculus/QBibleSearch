@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
-    a.setWindowIcon(QIcon(":/icon/QBibleSearch.icns"));
+    a.setWindowIcon(QIcon(":/icons/QBibleSearch.svg"));
 
     return a.exec();
 }
