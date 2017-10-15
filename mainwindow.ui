@@ -473,16 +473,35 @@
     </property>
     <addaction name="actionAbout_QBibleSearch"/>
    </widget>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="action_Include_Apocrypha"/>
+    <addaction name="actionQuit"/>
+   </widget>
+   <addaction name="menuFile"/>
    <addaction name="menuHelp"/>
   </widget>
-  <action name="actionQuit">
-   <property name="text">
-    <string>Quit</string>
-   </property>
-  </action>
   <action name="actionAbout_QBibleSearch">
    <property name="text">
-    <string>About QBibleSearch</string>
+    <string>&amp;About QBibleSearch</string>
+   </property>
+  </action>
+  <action name="actionQuit">
+   <property name="text">
+    <string>&amp;Quit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="action_Include_Apocrypha">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Include Apocrypha / Deuterocanon</string>
    </property>
   </action>
  </widget>

@@ -6,7 +6,9 @@
     <qresource prefix="/icons">
         <file>QBibleSearch.icns</file>
         <file>QBibleSearch.ico</file>
-        <file>QBibleSearch_256x256.png</file>
         <file>QBibleSearch.svg</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>COPYING</file>
     </qresource>
 </RCC>

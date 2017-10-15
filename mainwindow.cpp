@@ -1,8 +1,27 @@
+/* Copyright 2017 Benjamin S. Osenbach
+ *
+ * This file is part of QBibleSearch.
+ *
+ * QBibleSearch is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * QBibleSearch is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with QBibleSearch.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QFile>
 #include <QDialog>
 #include <QTextBrowser>
+#include <QLabel>
 #include <QTextStream>
 #include <QDebug>
 
@@ -77,10 +96,8 @@ void searchBible(Ui::MainWindow *ui) {
                     || line.contains(" " + search_term + "?", Qt::CaseInsensitive)
                     || line.contains(" " + search_term + "/", Qt::CaseInsensitive)
                     || line.contains(" " + search_term + "\"", Qt::CaseInsensitive)
+                    || line.contains("\"" + search_term + " ", Qt::CaseInsensitive)
                     || line.contains(" " + search_term + "\'", Qt::CaseInsensitive)
-                    || line.contains(" " + search_term + "�", Qt::CaseInsensitive)
-                    || line.contains("�" + search_term + " ", Qt::CaseInsensitive)
-                    || line.contains("�" + search_term + "�", Qt::CaseInsensitive)
                     || line.contains(" " + search_term + ",", Qt::CaseInsensitive);
 
             if (book == "Entire Bible") {
@@ -317,14 +334,22 @@ void MainWindow::on_actionAbout_QBibleSearch_triggered()
     about_window->setWindowTitle("About QBibleSearch");
     about_window->setLayout(new QVBoxLayout());
 
-    QTextBrowser *qtb = new QTextBrowser();
+    QLabel *ql = new QLabel("QBibleSearch\n\nVersion 1.0\n\n(c) 2017 Ben Osenbach <bsosenba@gmail.com>");
 
-    qtb->setText("QBibleSearch (c) 2017\n\nSend bug reports to Ben Osenbach (bsosenba@gmail.com)");
-
-    about_window->layout()->addWidget(qtb);
+    about_window->layout()->addWidget(ql);
 
     about_window->setMaximumWidth(300);
     about_window->setMaximumHeight(300);
 
     about_window->show();
+}
+
+void MainWindow::on_actionQuit_triggered()
+{
+    QApplication::quit();
+}
+
+void MainWindow::on_action_Include_Apocrypha_triggered()
+{
+    //pass
 }
