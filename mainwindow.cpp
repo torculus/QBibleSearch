@@ -86,7 +86,11 @@ void searchBible(Ui::MainWindow *ui) {
             QString line = s1.readLine();
 
             // find where the search term is a separate word
-            bool foundit = line.contains(" " + search_term + " ", Qt::CaseInsensitive)
+            QRegularExpression re("\\s" + search_term + "\\s", QRegularExpression::CaseInsensitiveOption);
+
+            QRegularExpressionMatch match = re.match(line);
+
+            bool foundit = true;/*line.contains(" " + search_term + " ", Qt::CaseInsensitive)
                     || line.contains(" " + search_term +"\n", Qt::CaseInsensitive)
                     || line.contains(" " + search_term + ":", Qt::CaseInsensitive)
                     || line.contains(" " + search_term + ".", Qt::CaseInsensitive)
@@ -98,7 +102,7 @@ void searchBible(Ui::MainWindow *ui) {
                     || line.contains(" " + search_term + "\"", Qt::CaseInsensitive)
                     || line.contains("\"" + search_term + " ", Qt::CaseInsensitive)
                     || line.contains(" " + search_term + "\'", Qt::CaseInsensitive)
-                    || line.contains(" " + search_term + ",", Qt::CaseInsensitive);
+                    || line.contains(" " + search_term + ",", Qt::CaseInsensitive);*/
 
             if (book == "Entire Bible") {
 
