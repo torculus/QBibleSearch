@@ -64,10 +64,12 @@ void searchBible(Ui::MainWindow *ui) {
         QFile bible;
 
         // allow for selecting different translations
-        if (translation.indexOf("NHEB") != -1) {
+        QRegularExpression nheb("NHEB");
+        QRegularExpression kjv("KJV");
+        if (nheb.match(translation).hasMatch()) {
             bible.setFileName(":/bibles/NHEB.txt");
             translation = "NHEB";
-        } else if (translation.indexOf("KJV") != -1) {
+        } else if (kjv.match(translation).hasMatch()) {
             bible.setFileName(":/bibles/KJV.txt");
             translation = "KJV";
         }
@@ -86,23 +88,12 @@ void searchBible(Ui::MainWindow *ui) {
             QString line = s1.readLine();
 
             // find where the search term is a separate word
-            QRegularExpression re("\\s" + search_term + "\\s", QRegularExpression::CaseInsensitiveOption);
+            QRegularExpression re("(\\s|\-)" + search_term + "(\\s|\\n|,|\\;|\\:|\\.|\\!|\\?|\\-)", \
+                                  QRegularExpression::CaseInsensitiveOption);
 
             QRegularExpressionMatch match = re.match(line);
 
-            bool foundit = true;/*line.contains(" " + search_term + " ", Qt::CaseInsensitive)
-                    || line.contains(" " + search_term +"\n", Qt::CaseInsensitive)
-                    || line.contains(" " + search_term + ":", Qt::CaseInsensitive)
-                    || line.contains(" " + search_term + ".", Qt::CaseInsensitive)
-                    || line.contains(" " + search_term + "-", Qt::CaseInsensitive)
-                    || line.contains(" " + search_term + ";", Qt::CaseInsensitive)
-                    || line.contains(" " + search_term + "!", Qt::CaseInsensitive)
-                    || line.contains(" " + search_term + "?", Qt::CaseInsensitive)
-                    || line.contains(" " + search_term + "/", Qt::CaseInsensitive)
-                    || line.contains(" " + search_term + "\"", Qt::CaseInsensitive)
-                    || line.contains("\"" + search_term + " ", Qt::CaseInsensitive)
-                    || line.contains(" " + search_term + "\'", Qt::CaseInsensitive)
-                    || line.contains(" " + search_term + ",", Qt::CaseInsensitive);*/
+            bool foundit = match.hasMatch();
 
             if (book == "Entire Bible") {
 
@@ -114,35 +105,15 @@ void searchBible(Ui::MainWindow *ui) {
                 }
             } else if (book == "Old Testament") {
                 // remove all New Testament verses
-                if (line.contains(QRegularExpression("Matthew [0-9]"))
-                        || line.contains(QRegularExpression("Mark [0-9]"))
-                        || line.contains(QRegularExpression("Luke [0-9]"))
-                        || line.contains(QRegularExpression("John [0-9]"))
-                        || line.contains(QRegularExpression("Acts [0-9]"))
-                        || line.contains(QRegularExpression("Romans [0-9]"))
-                        || line.contains(QRegularExpression("1 Corinthians [0-9]"))
-                        || line.contains(QRegularExpression("2 Corinthians [0-9]"))
-                        || line.contains(QRegularExpression("Galatians [0-9]"))
-                        || line.contains(QRegularExpression("Ephesians [0-9]"))
-                        || line.contains(QRegularExpression("Philippians [0-9]"))
-                        || line.contains(QRegularExpression("Colossians [0-9]"))
-                        || line.contains(QRegularExpression("1 Thessalonians [0-9]"))
-                        || line.contains(QRegularExpression("2 Thessalonians [0-9]"))
-                        || line.contains(QRegularExpression("1 Timothy [0-9]"))
-                        || line.contains(QRegularExpression("2 Timothy [0-9]"))
-                        || line.contains(QRegularExpression("Titus [0-9]"))
-                        || line.contains(QRegularExpression("Philemon [0-9]"))
-                        || line.contains(QRegularExpression("Hebrews [0-9]"))
-                        || line.contains(QRegularExpression("James [0-9]"))
-                        || line.contains(QRegularExpression("1 Peter [0-9]"))
-                        || line.contains(QRegularExpression("2 Peter [0-9]"))
-                        || line.contains(QRegularExpression("1 John [0-9]"))
-                        || line.contains(QRegularExpression("2 John [0-9]"))
-                        || line.contains(QRegularExpression("3 John [0-9]"))
-                        || line.contains(QRegularExpression("Jude [0-9]"))
-                        || line.contains(QRegularExpression("Revelation [0-9]")) ) {
-                    //pass
-                } else {
+                QRegularExpression title(
+                            "(Matthew|Mark|Luke|John|Acts|Romans|[1-2] Corinthians|Galatians|"
+                            "Ephesians|Philippians|Colossians|[1-2] Thessalonians|[1-2] Timothy|"
+                            "Titus|Philemon|Hebrews|James|[1-2] Peter|[1-3] James|Jude|Revelation)"
+                            " [1-9]");
+                QRegularExpressionMatch match = title.match(line);
+
+                // if the New Testament is removed
+                if (!match.hasMatch()) {
                     if (foundit) {
                         verses.append(line);
                         verses.append("\n\n");
@@ -150,48 +121,17 @@ void searchBible(Ui::MainWindow *ui) {
                     }
                 }
             } else if (book == "New Testament") {
+                // remove all Old Testament and apocrypha
+                QRegularExpression title(
+                            "(Genesis|Exodus|Leviticus|Numbers|Deuteronomy|Joshua|Judges|Ruth|"
+                            "[1-2] Samuel|[1-2] Kings|[1-2] Chronicles|Ezra|Nehemiah|Esther|Job|Psalm|"
+                            "Proverbs|Ecclesiastes|Song of Solomon|Isaiah|Jeremiah|Lamentations|Ezekiel|"
+                            "Daniel|Hosea|Joel|Amos|Obadiah|Jonah|Micah|Nahum|Habakkuk|Zephaniah|Haggai|"
+                            "Zechariah|Malachi) [1-9]");
+                QRegularExpressionMatch match = title.match(line);
 
-                if (line.contains(QRegularExpression("Genesis [0-9]"))
-                        || line.contains(QRegularExpression("Exodus [0-9]"))
-                        || line.contains(QRegularExpression("Leviticus [0-9]"))
-                        || line.contains(QRegularExpression("Numbers [0-9]"))
-                        || line.contains(QRegularExpression("Deuteronomy [0-9]"))
-                        || line.contains(QRegularExpression("Joshua [0-9]"))
-                        || line.contains(QRegularExpression("Judges [0-9]"))
-                        || line.contains(QRegularExpression("Ruth [0-9]"))
-                        || line.contains(QRegularExpression("1 Samuel [0-9]"))
-                        || line.contains(QRegularExpression("2 Samuel [0-9]"))
-                        || line.contains(QRegularExpression("1 Kings [0-9]"))
-                        || line.contains(QRegularExpression("2 Kings [0-9]"))
-                        || line.contains(QRegularExpression("1 Chronicles [0-9]"))
-                        || line.contains(QRegularExpression("2 Chronicles [0-9]"))
-                        || line.contains(QRegularExpression("Ezra [0-9]"))
-                        || line.contains(QRegularExpression("Nehemiah [0-9]"))
-                        || line.contains(QRegularExpression("Esther [0-9]"))
-                        || line.contains(QRegularExpression("Job [0-9]"))
-                        || line.contains(QRegularExpression("Psalm [0-9]"))
-                        || line.contains(QRegularExpression("Proverbs [0-9]"))
-                        || line.contains(QRegularExpression("Ecclesiastes [0-9]"))
-                        || line.contains(QRegularExpression("Song of Solomon [0-9]"))
-                        || line.contains(QRegularExpression("Isaiah [0-9]"))
-                        || line.contains(QRegularExpression("Jeremiah [0-9]"))
-                        || line.contains(QRegularExpression("Lamentations [0-9]"))
-                        || line.contains(QRegularExpression("Ezekiel [0-9]"))
-                        || line.contains(QRegularExpression("Daniel [0-9]"))
-                        || line.contains(QRegularExpression("Hosea [0-9]"))
-                        || line.contains(QRegularExpression("Joel [0-9]"))
-                        || line.contains(QRegularExpression("Amos [0-9]"))
-                        || line.contains(QRegularExpression("Obadiah [0-9]"))
-                        || line.contains(QRegularExpression("Jonah [0-9]"))
-                        || line.contains(QRegularExpression("Micah [0-9]"))
-                        || line.contains(QRegularExpression("Nahum [0-9]"))
-                        || line.contains(QRegularExpression("Habakkuk [0-9]"))
-                        || line.contains(QRegularExpression("Zephaniah [0-9]"))
-                        || line.contains(QRegularExpression("Haggai [0-9]"))
-                        || line.contains(QRegularExpression("Zechariah [0-9]"))
-                        || line.contains(QRegularExpression("Malachi [0-9]")) ) {
-                    //pass
-                } else {
+                // if the Old Testament is removed
+                if (!match.hasMatch()) {
                     if (foundit) {
                         verses.append(line);
                         verses.append("\n\n");
@@ -199,75 +139,19 @@ void searchBible(Ui::MainWindow *ui) {
                     }
                 }
             } else if (book == "Apocrypha/Deuterocanonical"){
+                // remove all Old and New Testament verses
+                QRegularExpression title(
+                            "(Genesis|Exodus|Leviticus|Numbers|Deuteronomy|Joshua|Judges|Ruth|"
+                            "[1-2] Samuel|[1-2] Kings|[1-2] Chronicles|Ezra|Nehemiah|Esther|Job|Psalm|"
+                            "Proverbs|Ecclesiastes|Song of Solomon|Isaiah|Jeremiah|Lamentations|Ezekiel|"
+                            "Daniel|Hosea|Joel|Amos|Obadiah|Jonah|Micah|Nahum|Habakkuk|Zephaniah|Haggai|"
+                            "Zechariah|Malachi|Matthew|Mark|Luke|John|Acts|Romans|[1-2] Corinthians|Galatians|"
+                            "Ephesians|Philippians|Colossians|[1-2] Thessalonians|[1-2] Timothy|Titus|Philemon|"
+                            "Hebrews|James|[1-2] Peter|[1-3] James|Jude|Revelation) [1-9]");
+                QRegularExpressionMatch match = title.match(line);
 
-                if (line.contains(QRegularExpression("Genesis [0-9]"))
-                        || line.contains(QRegularExpression("Exodus [0-9]"))
-                        || line.contains(QRegularExpression("Leviticus [0-9]"))
-                        || line.contains(QRegularExpression("Numbers [0-9]"))
-                        || line.contains(QRegularExpression("Deuteronomy [0-9]"))
-                        || line.contains(QRegularExpression("Joshua [0-9]"))
-                        || line.contains(QRegularExpression("Judges [0-9]"))
-                        || line.contains(QRegularExpression("Ruth [0-9]"))
-                        || line.contains(QRegularExpression("1 Samuel [0-9]"))
-                        || line.contains(QRegularExpression("2 Samuel [0-9]"))
-                        || line.contains(QRegularExpression("1 Kings [0-9]"))
-                        || line.contains(QRegularExpression("2 Kings [0-9]"))
-                        || line.contains(QRegularExpression("1 Chronicles [0-9]"))
-                        || line.contains(QRegularExpression("2 Chronicles [0-9]"))
-                        || line.contains(QRegularExpression("Ezra [0-9]"))
-                        || line.contains(QRegularExpression("Nehemiah [0-9]"))
-                        || line.contains(QRegularExpression("Esther [0-9]"))
-                        || line.contains(QRegularExpression("Job [0-9]"))
-                        || line.contains(QRegularExpression("Psalm [0-9]"))
-                        || line.contains(QRegularExpression("Proverbs [0-9]"))
-                        || line.contains(QRegularExpression("Ecclesiastes [0-9]"))
-                        || line.contains(QRegularExpression("Song of Solomon [0-9]"))
-                        || line.contains(QRegularExpression("Isaiah [0-9]"))
-                        || line.contains(QRegularExpression("Jeremiah [0-9]"))
-                        || line.contains(QRegularExpression("Lamentations [0-9]"))
-                        || line.contains(QRegularExpression("Ezekiel [0-9]"))
-                        || line.contains(QRegularExpression("Daniel [0-9]"))
-                        || line.contains(QRegularExpression("Hosea [0-9]"))
-                        || line.contains(QRegularExpression("Joel [0-9]"))
-                        || line.contains(QRegularExpression("Amos [0-9]"))
-                        || line.contains(QRegularExpression("Obadiah [0-9]"))
-                        || line.contains(QRegularExpression("Jonah [0-9]"))
-                        || line.contains(QRegularExpression("Micah [0-9]"))
-                        || line.contains(QRegularExpression("Nahum [0-9]"))
-                        || line.contains(QRegularExpression("Habakkuk [0-9]"))
-                        || line.contains(QRegularExpression("Zephaniah [0-9]"))
-                        || line.contains(QRegularExpression("Haggai [0-9]"))
-                        || line.contains(QRegularExpression("Zechariah [0-9]"))
-                        || line.contains(QRegularExpression("Malachi [0-9]"))
-                        || line.contains(QRegularExpression("Matthew [0-9]"))
-                        || line.contains(QRegularExpression("Mark [0-9]"))
-                        || line.contains(QRegularExpression("Luke [0-9]"))
-                        || line.contains(QRegularExpression("John [0-9]"))
-                        || line.contains(QRegularExpression("Acts [0-9]"))
-                        || line.contains(QRegularExpression("Romans [0-9]"))
-                        || line.contains(QRegularExpression("1 Corinthians [0-9]"))
-                        || line.contains(QRegularExpression("2 Corinthians [0-9]"))
-                        || line.contains(QRegularExpression("Galatians [0-9]"))
-                        || line.contains(QRegularExpression("Ephesians [0-9]"))
-                        || line.contains(QRegularExpression("Philippians [0-9]"))
-                        || line.contains(QRegularExpression("Colossians [0-9]"))
-                        || line.contains(QRegularExpression("1 Thessalonians [0-9]"))
-                        || line.contains(QRegularExpression("2 Thessalonians [0-9]"))
-                        || line.contains(QRegularExpression("1 Timothy [0-9]"))
-                        || line.contains(QRegularExpression("2 Timothy [0-9]"))
-                        || line.contains(QRegularExpression("Titus [0-9]"))
-                        || line.contains(QRegularExpression("Philemon [0-9]"))
-                        || line.contains(QRegularExpression("Hebrews [0-9]"))
-                        || line.contains(QRegularExpression("James [0-9]"))
-                        || line.contains(QRegularExpression("1 Peter [0-9]"))
-                        || line.contains(QRegularExpression("2 Peter [0-9]"))
-                        || line.contains(QRegularExpression("1 John [0-9]"))
-                        || line.contains(QRegularExpression("2 John [0-9]"))
-                        || line.contains(QRegularExpression("3 John [0-9]"))
-                        || line.contains(QRegularExpression("Jude [0-9]"))
-                        || line.contains(QRegularExpression("Revelation [0-9]")) ) {
-                    //pass
-                } else {
+                // if the Old Testament is removed
+                if (!match.hasMatch()) {
                     if (foundit) {
                         verses.append(line);
                         verses.append("\n\n");
@@ -275,7 +159,11 @@ void searchBible(Ui::MainWindow *ui) {
                     }
                 }
             } else {
-                if (line.contains( QRegularExpression(book + " [0-9]") ) ) {
+                QRegularExpression title(book + " [1-9]");
+                QRegularExpressionMatch match = title.match(line);
+
+                // this time, we want it if it DOES have a match
+                if (match.hasMatch()) {
                     if (foundit) {
                         verses.append(line);
                         verses.append("\n\n");
