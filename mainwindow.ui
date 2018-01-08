@@ -67,11 +67,6 @@
         </item>
         <item>
          <property name="text">
-          <string>Apocrypha/Deuterocanonical</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
           <string>Genesis</string>
          </property>
         </item>
@@ -398,51 +393,6 @@
         <item>
          <property name="text">
           <string>Revelation</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Tobit</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Judith</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Additions to Esther</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Wisdom</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Sirach/Ecclesiasticus</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Baruch</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Additions to Daniel</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>1 Maccabees</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>2 Maccabees</string>
          </property>
         </item>
        </widget>
