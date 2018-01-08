@@ -33,12 +33,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->lineEdit_2->hide();
 
-    // separate large partitons of the Bible
-    ui->comboBox_2->insertSeparator(4);
-    //separate the Old Testament
-    ui->comboBox_2->insertSeparator(44);
-    //separate the New Testament
-    ui->comboBox_2->insertSeparator(72);
+    // separate composite sections from the Old Testament
+    ui->comboBox_2->insertSeparator(3);
+    // separate the Old Testament from the New Testament
+    ui->comboBox_2->insertSeparator(43); // separator is at position 43
 
     // prevent resizing the window
     this->setFixedSize(width(), height());
@@ -88,7 +86,7 @@ void searchBible(Ui::MainWindow *ui) {
             QString line = s1.readLine();
 
             // find where the search term is a separate word
-            QRegularExpression re("(\\s|\-)" + search_term + "(\\s|\\n|,|\\;|\\:|\\.|\\!|\\?|\\-)", \
+            QRegularExpression re("(\\s|-)" + search_term + "(\\s|\\n|,|\\;|\\:|\\.|\\!|\\?|-)", \
                                   QRegularExpression::CaseInsensitiveOption);
 
             QRegularExpressionMatch match = re.match(line);
@@ -243,5 +241,37 @@ void MainWindow::on_actionQuit_triggered()
 
 void MainWindow::on_action_Include_Apocrypha_triggered()
 {
-    //pass
+    if (! ui->action_Include_Apocrypha->isChecked()) {
+        // hide apocrypha
+        ui->comboBox_2->removeItem(3);
+
+        for (int i=0; i<17; i++) {
+            // remove the apocrypha at the end
+            ui->comboBox_2->removeItem(72);
+        }
+
+    } else {
+        // show apocrypha
+        ui->comboBox_2->insertItem(3, "Apocrypha/Deuterocanonical");
+
+        // separate the New Testament from the Apocrypha
+        ui->comboBox_2->insertSeparator(72);
+
+        // add in the Apocrypha/Deuterocanonical books
+        ui->comboBox_2->addItem("1 Esdras");
+        ui->comboBox_2->addItem("2 Esdras");
+        ui->comboBox_2->addItem("Tobit");
+        ui->comboBox_2->addItem("Judith");
+        ui->comboBox_2->addItem("Additions to Esther");
+        ui->comboBox_2->addItem("Wisdom");
+        ui->comboBox_2->addItem("Sirach/Ecclesiasticus");
+        ui->comboBox_2->addItem("Baruch");
+        ui->comboBox_2->addItem("Letter of Jeremiah");
+        ui->comboBox_2->addItem("Prayer of Azariah");
+        ui->comboBox_2->addItem("Susanna");
+        ui->comboBox_2->addItem("Bel and the Dragon");
+        ui->comboBox_2->addItem("Prayer of Manasseh");
+        ui->comboBox_2->addItem("1 Macabees");
+        ui->comboBox_2->addItem("2 Macabees");
+    }
 }
