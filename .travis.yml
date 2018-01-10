@@ -1,12 +1,12 @@
-dist:xenial
+language: cpp
 
-langugae: cpp
+dist: xenial
 
 before_install:
     - sudo add-apt-repository --yes ppa:beineri/opt-qt58-trusty
     - sudo apt-get -qq update
 
-intstall:
+install:
     - sudo apt-get --yes install qt58base
 
 before_script:
