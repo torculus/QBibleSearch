@@ -10,5 +10,5 @@ intstall:
 before_script:
     - QTDIR="/opt/qt58"
     - PATH="$QTDIR/bin:$PATH"
-    - source /opt/qt55/bin/qt55-env.sh
+    - source /opt/qt58/bin/qt58-env.sh
 
