@@ -1,0 +1,14 @@
+langugae: cpp
+
+before_install:
+    - sudo add-apt-repository --yes ppa:beineri/opt-qt58-trusty
+    - sudo apt-get -qq update
+
+intstall:
+    - sudo apt-get --yes install qt58base
+
+before_script:
+    - QTDIR="/opt/qt58"
+    - PATH="$QTDIR/bin:$PATH"
+    - source /opt/qt55/bin/qt55-env.sh
+
