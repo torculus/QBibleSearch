@@ -18,13 +18,5 @@ script:
   - sudo checkinstall --pkgname=app --pkgversion="1" --pkgrelease="1" --backup=no --fstrans=no --default --deldoc 
   - mkdir appdir ; cd appdir
   - dpkg -x ../app_1-1_amd64.deb . ; find .
-  - cp ./usr/share/applications/*.desktop .
-  - cp ./usr/share/icons/hicolor/48x48/apps/*.png .
-  - cd .. 
-  - wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/3/linuxdeployqt-3-x86_64.AppImage" 
-  - chmod a+x linuxdeployqt*.AppImage
-  - unset QTDIR; unset QT_PLUGIN_PATH ; unset LD_LIBRARY_PATH
-  - ./linuxdeployqt*.AppImage ./appdir/usr/bin/* -bundle-non-qt-libs -qmldir=$(readlink -f /opt/qt5*/qml/)
-  - ./linuxdeployqt*.AppImage ./appdir/usr/bin/* -appimage -qmldir=$(readlink -f /opt/qt5*/qml/)
-  - find ./appdir -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d " " -f 2-3 | sort | uniq
-  - curl --upload-file ./APPNAME*.AppImage https://transfer.sh/APPNAME-git.$(git rev-parse --short HEAD)-x86_64.AppImage
+#  - cp ./usr/share/applications/*.desktop .
+#  - cp ./usr/share/icons/hicolor/48x48/apps/*.png  - cd ..
