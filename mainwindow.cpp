@@ -20,6 +20,7 @@
 #include "ui_mainwindow.h"
 #include <QFile>
 #include <QDialog>
+#include <QFormLayout>
 #include <QTextBrowser>
 #include <QLabel>
 #include <QTextStream>
@@ -64,10 +65,17 @@ void searchBible(Ui::MainWindow *ui) {
         // allow for selecting different translations
         QRegularExpression nheb("NHEB");
         QRegularExpression kjv("KJV");
+
         if (nheb.match(translation).hasMatch()) {
+            // disable the Include Apocrypha section
+            ui->action_Include_Apocrypha->setVisible(false);
+
             bible.setFileName(":/bibles/NHEB.txt");
             translation = "NHEB";
         } else if (kjv.match(translation).hasMatch()) {
+            // enable Apocrypha for KJV
+            ui->action_Include_Apocrypha->setVisible(true);
+
             bible.setFileName(":/bibles/KJV.txt");
             translation = "KJV";
         }
@@ -222,15 +230,36 @@ void MainWindow::on_actionAbout_QBibleSearch_triggered()
 {
     QDialog *about_window = new QDialog();
     about_window->setWindowTitle("About QBibleSearch");
-    about_window->setLayout(new QVBoxLayout());
 
-    QLabel *ql = new QLabel("QBibleSearch\n\nVersion 1.0\n\n(c) 2017 Ben Osenbach <bsosenba@gmail.com>");
+    QGridLayout *gridlayout = new QGridLayout();
 
-    about_window->layout()->addWidget(ql);
+    // include the application icon
+    QPixmap icon(":/icons/QBibleSearch.png");
+    QLabel *iconlabel = new QLabel();
+    iconlabel->setPixmap(icon);
+    gridlayout->addWidget(iconlabel, 0, 0, 2, 1);
 
-    about_window->setMaximumWidth(300);
-    about_window->setMaximumHeight(300);
+    QLabel *heading = new QLabel();
+    heading->setTextFormat(Qt::RichText);
+    heading->setText("<h1>QBibleSearch 1.0</h1>");
+    gridlayout->addWidget(heading, 0, 1, 1, 1);
 
+    QLabel *ql = new QLabel();
+    ql->setOpenExternalLinks(true);
+    ql->setTextFormat(Qt::RichText);
+    ql->setText("<p>Based on Qt 5.8.0<br /><br />"
+                "Copyright (c) 2018 Benjamin S. Osenbach<br /><br />"
+                "This program comes with absolutely no warranty. "
+                "See the <a href=\"http://www.gnu.org/licenses/gpl-3.0.html\">"
+                "GNU General Public License,version 3 or later</a> for details.<br /><br />"
+                "<a href=\"https://github.com/torculus/QBibleSearch\">Project webpage</a></p>");
+    ql->setWordWrap(true);
+    gridlayout->addWidget(ql, 1, 1, 1, 1);
+
+    about_window->setLayout(gridlayout);
+
+    // prevent resizing the about dialog
+    about_window->setFixedSize(500, 220);
     about_window->show();
 }
 
@@ -274,4 +303,9 @@ void MainWindow::on_action_Include_Apocrypha_triggered()
         ui->comboBox_2->addItem("1 Macabees");
         ui->comboBox_2->addItem("2 Macabees");
     }
+}
+
+void MainWindow::closeEvent(QCloseEvent*)
+{
+    QApplication::quit();
 }

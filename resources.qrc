@@ -7,6 +7,7 @@
         <file>QBibleSearch.icns</file>
         <file>QBibleSearch.ico</file>
         <file>QBibleSearch.svg</file>
+        <file>QBibleSearch.png</file>
     </qresource>
     <qresource prefix="/">
         <file>COPYING</file>

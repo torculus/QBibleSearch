@@ -27,5 +27,13 @@ int main(int argc, char *argv[])
 
     a.setWindowIcon(QIcon(":/icons/QBibleSearch.svg"));
 
+    /* The application icon was created by compositing the following public domain images:
+     *
+     * https://openclipart.org/detail/149527/bible
+     *
+     * https://openclipart.org/detail/140539/magnifying-glass
+     *
+     */
+
     return a.exec();
 }
