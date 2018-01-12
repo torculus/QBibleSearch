@@ -4,8 +4,6 @@
         <file>KJV.txt</file>
     </qresource>
     <qresource prefix="/icons">
-        <file>QBibleSearch.icns</file>
-        <file>QBibleSearch.ico</file>
         <file>QBibleSearch.svg</file>
         <file>QBibleSearch.png</file>
     </qresource>
