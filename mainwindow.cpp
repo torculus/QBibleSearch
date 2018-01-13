@@ -1,4 +1,4 @@
-/* Copyright 2017 Benjamin S. Osenbach
+/* Copyright 2018 Benjamin S. Osenbach
  *
  * This file is part of QBibleSearch.
  *
@@ -110,24 +110,7 @@ void searchBible(Ui::MainWindow *ui) {
                     occurrences++;
                 }
             } else if (book == "Old Testament") {
-                // remove all New Testament verses
-                QRegularExpression title(
-                            "(Matthew|Mark|Luke|John|Acts|Romans|[1-2] Corinthians|Galatians|"
-                            "Ephesians|Philippians|Colossians|[1-2] Thessalonians|[1-2] Timothy|"
-                            "Titus|Philemon|Hebrews|James|[1-2] Peter|[1-3] James|Jude|Revelation)"
-                            " [1-9]");
-                QRegularExpressionMatch match = title.match(line);
-
-                // if the New Testament is removed
-                if (!match.hasMatch()) {
-                    if (foundit) {
-                        verses.append(line);
-                        verses.append("\n\n");
-                        occurrences++;
-                    }
-                }
-            } else if (book == "New Testament") {
-                // remove all Old Testament and apocrypha
+                // match only Old Testament verses
                 QRegularExpression title(
                             "(Genesis|Exodus|Leviticus|Numbers|Deuteronomy|Joshua|Judges|Ruth|"
                             "[1-2] Samuel|[1-2] Kings|[1-2] Chronicles|Ezra|Nehemiah|Esther|Job|Psalm|"
@@ -136,8 +119,23 @@ void searchBible(Ui::MainWindow *ui) {
                             "Zechariah|Malachi) [1-9]");
                 QRegularExpressionMatch match = title.match(line);
 
-                // if the Old Testament is removed
-                if (!match.hasMatch()) {
+                if (match.hasMatch()) {
+                    if (foundit) {
+                        verses.append(line);
+                        verses.append("\n\n");
+                        occurrences++;
+                    }
+                }
+            } else if (book == "New Testament") {
+                // match only New Testament verses
+                QRegularExpression title(
+                            "(Matthew|Mark|Luke|John|Acts|Romans|[1-2] Corinthians|Galatians|"
+                            "Ephesians|Philippians|Colossians|[1-2] Thessalonians|[1-2] Timothy|"
+                            "Titus|Philemon|Hebrews|James|[1-2] Peter|[1-3] James|Jude|Revelation)"
+                            " [1-9]");
+                QRegularExpressionMatch match = title.match(line);
+
+                if (match.hasMatch()) {
                     if (foundit) {
                         verses.append(line);
                         verses.append("\n\n");
@@ -145,19 +143,13 @@ void searchBible(Ui::MainWindow *ui) {
                     }
                 }
             } else if (book == "Apocrypha/Deuterocanonical"){
-                // remove all Old and New Testament verses
+                // match only Deuterocanonical verses
                 QRegularExpression title(
-                            "(Genesis|Exodus|Leviticus|Numbers|Deuteronomy|Joshua|Judges|Ruth|"
-                            "[1-2] Samuel|[1-2] Kings|[1-2] Chronicles|Ezra|Nehemiah|Esther|Job|Psalm|"
-                            "Proverbs|Ecclesiastes|Song of Solomon|Isaiah|Jeremiah|Lamentations|Ezekiel|"
-                            "Daniel|Hosea|Joel|Amos|Obadiah|Jonah|Micah|Nahum|Habakkuk|Zephaniah|Haggai|"
-                            "Zechariah|Malachi|Matthew|Mark|Luke|John|Acts|Romans|[1-2] Corinthians|Galatians|"
-                            "Ephesians|Philippians|Colossians|[1-2] Thessalonians|[1-2] Timothy|Titus|Philemon|"
-                            "Hebrews|James|[1-2] Peter|[1-3] James|Jude|Revelation) [1-9]");
+                            "(Tobit|Judith|Baruch|Wisdom|Sirach/Ecclesiasticus|1 Maccabees|"
+                            "2 Maccabees) [1-9]");
                 QRegularExpressionMatch match = title.match(line);
 
-                // if the Old Testament is removed
-                if (!match.hasMatch()) {
+                if (match.hasMatch()) {
                     if (foundit) {
                         verses.append(line);
                         verses.append("\n\n");
@@ -247,7 +239,7 @@ void MainWindow::on_actionAbout_QBibleSearch_triggered()
     QLabel *ql = new QLabel();
     ql->setOpenExternalLinks(true);
     ql->setTextFormat(Qt::RichText);
-    ql->setText("<p>Based on Qt 5.8.0<br /><br />"
+    ql->setText("<p>Built with Qt 5.8.0<br /><br />"
                 "Copyright (c) 2018 Benjamin S. Osenbach<br /><br />"
                 "This program comes with absolutely no warranty. "
                 "See the <a href=\"http://www.gnu.org/licenses/gpl-3.0.html\">"

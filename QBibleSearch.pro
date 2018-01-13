@@ -1,4 +1,4 @@
-#/* Copyright 2017 Benjamin S. Osenbach
+#/* Copyright 2018 Benjamin S. Osenbach
 # *
 # * This file is part of QBibleSearch.
 # *
