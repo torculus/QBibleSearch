@@ -18,10 +18,10 @@ script:
 - sudo checkinstall --pkgname=qbiblesearch --pkgversion="1" --pkgrelease="0" --backup=no
   --fstrans=no --default --deldoc
 
-deploy:
-  provider: releases
-  api_key:
-    secure: S+9ngVUOoCfceBTbqvBPuwXslCiR89n1fVIxoZDh9pVBy8koeGPzkiWF4KhvupwhgPwW1FkFg+YnHCEEg3gODEwyWqagHQ+Yt8cc0nn3vvhkAwkY5+bqB1dk967RBbQXgZ9WV80u2jALCqI/AoeyMCtK3LxeBpFVQOmmkRdeeBh7HqsH8z/8SCLDN7JEfJ7+L2CnwTcyHtY65WpYRuisxGrXJFT/7pBjRiOTETQu5KAos0Qy2+1PZg4XfSdmZ+rhoQ0UzQa/bP4FJmkObdIquaJVgj+r1HxFrL39udD1lHlFJsm+HgyTPEGPI3eC9czOs2IVmi+0Og3EZJ2tDOBKP44Vp7kifDQnuCxeDUGYG0RmVB+OeHFw0ClcuSUmWITa/ITqIjwo6vfXJAUGRa3TcQkP92nvriz6V18Ow8SkidL9uCjqyypkHne6anld5z0qqUKiIj0SbN0PQVhvB/onaRG5G3j2zFjS/BFGVV11uzREBQ6/831XCIfkhCJwojFlRhh7hkT+U3HUjwc1AR93/MshU4U0CI4nO0L7/bWUp6Fu4Zl8Zv8iUjr82KTK5t8vVvtdqRrEv+zbOcT41wf/3BJMje/ahMwDVfQDc1b0u0n+S1pMImzWDp3qybbtxXeaxLvpSvAoqpClgwtpQhCWJHLmBVFOPAa/CDVUCElEMXY=
-  file: qbiblesearch_1-0_amd64.deb
-  on:
-    repo: torculus/QBibleSearch
+#deploy:
+#  provider: releases
+#  api_key:
+#    secure: S+9ngVUOoCfceBTbqvBPuwXslCiR89n1fVIxoZDh9pVBy8koeGPzkiWF4KhvupwhgPwW1FkFg+YnHCEEg3gODEwyWqagHQ+Yt8cc0nn3vvhkAwkY5+bqB1dk967RBbQXgZ9WV80u2jALCqI/AoeyMCtK3LxeBpFVQOmmkRdeeBh7HqsH8z/8SCLDN7JEfJ7+L2CnwTcyHtY65WpYRuisxGrXJFT/7pBjRiOTETQu5KAos0Qy2+1PZg4XfSdmZ+rhoQ0UzQa/bP4FJmkObdIquaJVgj+r1HxFrL39udD1lHlFJsm+HgyTPEGPI3eC9czOs2IVmi+0Og3EZJ2tDOBKP44Vp7kifDQnuCxeDUGYG0RmVB+OeHFw0ClcuSUmWITa/ITqIjwo6vfXJAUGRa3TcQkP92nvriz6V18Ow8SkidL9uCjqyypkHne6anld5z0qqUKiIj0SbN0PQVhvB/onaRG5G3j2zFjS/BFGVV11uzREBQ6/831XCIfkhCJwojFlRhh7hkT+U3HUjwc1AR93/MshU4U0CI4nO0L7/bWUp6Fu4Zl8Zv8iUjr82KTK5t8vVvtdqRrEv+zbOcT41wf/3BJMje/ahMwDVfQDc1b0u0n+S1pMImzWDp3qybbtxXeaxLvpSvAoqpClgwtpQhCWJHLmBVFOPAa/CDVUCElEMXY=
+#  file: qbiblesearch_1-0_amd64.deb
+#  on:
+#    repo: torculus/QBibleSearch

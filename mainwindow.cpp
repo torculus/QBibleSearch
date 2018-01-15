@@ -48,6 +48,31 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+std::pair <QString, int> getVerses(QString include_books, QString line, bool foundit, int occurrences)
+{
+    QString results;
+
+    QRegularExpression titles(include_books);
+    QRegularExpressionMatch match = titles.match(line);
+
+    if (match.hasMatch()) {
+        if (foundit) {
+            results.append(line);
+            results.append("\n\n");
+
+            // occurrences updates on every iteration of searchBible
+            occurrences++;
+        }
+    }
+
+    std::pair <QString, int> value;
+
+    value.first = results;
+    value.second = occurrences;
+
+    return value;
+}
+
 void searchBible(Ui::MainWindow *ui) {
     QString search_term = ui->lineEdit->text();
 
@@ -103,72 +128,83 @@ void searchBible(Ui::MainWindow *ui) {
 
             if (book == "Entire Bible") {
 
-                if (foundit) {
-                    verses.append(line);
-                    verses.append("\n\n");
+                if (ui->action_Include_Apocrypha->isChecked()) {
+                    // Catholic mode
 
-                    occurrences++;
-                }
-            } else if (book == "Old Testament") {
-                // match only Old Testament verses
-                QRegularExpression title(
-                            "(Genesis|Exodus|Leviticus|Numbers|Deuteronomy|Joshua|Judges|Ruth|"
-                            "[1-2] Samuel|[1-2] Kings|[1-2] Chronicles|Ezra|Nehemiah|Esther|Job|Psalm|"
-                            "Proverbs|Ecclesiastes|Song of Solomon|Isaiah|Jeremiah|Lamentations|Ezekiel|"
-                            "Daniel|Hosea|Joel|Amos|Obadiah|Jonah|Micah|Nahum|Habakkuk|Zephaniah|Haggai|"
-                            "Zechariah|Malachi) [1-9]");
-                QRegularExpressionMatch match = title.match(line);
-
-                if (match.hasMatch()) {
                     if (foundit) {
                         verses.append(line);
                         verses.append("\n\n");
+
                         occurrences++;
                     }
+                } else {
+                    // Protestant mode
+
+                    std::pair <QString, int> value = getVerses(
+                                // exclude Apocryphal/Deuterocanonical books from the results
+// !!!!!!!!!!!!!!!!!!!!!!!!
+                                "[^(Tobit|Judith|Baruch)] [1-9]", line, foundit, occurrences);
+
+                    verses.append(value.first);
+                    occurrences = value.second;
                 }
+
+            } else if (book == "Old Testament") {
+
+                if (ui->action_Include_Apocrypha->isChecked()) {
+                    // Catholic mode
+
+                    std::pair <QString, int> value = getVerses(
+                                "(Genesis|Exodus|Leviticus|Numbers|Deuteronomy|Joshua|Judges|Ruth|"
+// !!!!!!!!!!!!!!!!!!!!!!!!
+                                "[1-2] Samuel|[1-2] Kings|[1-2] Chronicles|Ezra|Nehemiah|Esther|Job|Psalm|"
+                                "Proverbs|Ecclesiastes|Song of Solomon|Isaiah|Jeremiah|Lamentations|Ezekiel|"
+                                "Daniel|Hosea|Joel|Amos|Obadiah|Jonah|Micah|Nahum|Habakkuk|Zephaniah|Haggai|"
+                                "Zechariah|Malachi) [1-9]", line, foundit, occurrences);
+
+                    verses.append(value.first);
+                    occurrences = value.second;
+
+                } else {
+                    // Protestant mode
+
+                    std::pair <QString, int> value = getVerses(
+                                "(Genesis|Exodus|Leviticus|Numbers|Deuteronomy|Joshua|Judges|Ruth|"
+                                "[1-2] Samuel|[1-2] Kings|[1-2] Chronicles|Ezra|Nehemiah|Esther|Job|Psalm|"
+                                "Proverbs|Ecclesiastes|Song of Solomon|Isaiah|Jeremiah|Lamentations|Ezekiel|"
+                                "Daniel|Hosea|Joel|Amos|Obadiah|Jonah|Micah|Nahum|Habakkuk|Zephaniah|Haggai|"
+                                "Zechariah|Malachi) [1-9]", line, foundit, occurrences);
+
+                    verses.append(value.first);
+                    occurrences = value.second;
+                }
+
             } else if (book == "New Testament") {
-                // match only New Testament verses
-                QRegularExpression title(
+
+                std::pair <QString, int> value = getVerses(
                             "(Matthew|Mark|Luke|John|Acts|Romans|[1-2] Corinthians|Galatians|"
                             "Ephesians|Philippians|Colossians|[1-2] Thessalonians|[1-2] Timothy|"
                             "Titus|Philemon|Hebrews|James|[1-2] Peter|[1-3] James|Jude|Revelation)"
-                            " [1-9]");
-                QRegularExpressionMatch match = title.match(line);
+                            " [1-9]", line, foundit, occurrences);
 
-                if (match.hasMatch()) {
-                    if (foundit) {
-                        verses.append(line);
-                        verses.append("\n\n");
-                        occurrences++;
-                    }
-                }
+                verses.append(value.first);
+                occurrences = value.second;
+
             } else if (book == "Apocrypha/Deuterocanonical"){
-                // match only Deuterocanonical verses
-                QRegularExpression title(
-                            "(Tobit|Judith|Baruch|Wisdom|Sirach/Ecclesiasticus|1 Maccabees|"
-                            "2 Maccabees) [1-9]");
-                QRegularExpressionMatch match = title.match(line);
 
-                if (match.hasMatch()) {
-                    if (foundit) {
-                        verses.append(line);
-                        verses.append("\n\n");
-                        occurrences++;
-                    }
-                }
-            } else {
-                QRegularExpression title(book + " [1-9]");
-                QRegularExpressionMatch match = title.match(line);
+                std::pair <QString, int> value = getVerses(
+                            "(Tobit|Judith|Baruch|Wisdom|Sirach/Ecclesiasticus|1 Maccabees|2 Maccabees)"
+                            " [1-9]", line, foundit, occurrences);
 
-                // this time, we want it if it DOES have a match
-                if (match.hasMatch()) {
-                    if (foundit) {
-                        verses.append(line);
-                        verses.append("\n\n");
+                verses.append(value.first);
+                occurrences = value.second;
 
-                        occurrences++;
-                    }
-                }
+            } else { // this condition is met if we're only searching through one particular book
+
+                std::pair <QString, int> value = getVerses(book + " [1-9]", line, foundit, occurrences);
+
+                verses.append(value.first);
+                occurrences = value.second;
             }
         }
 
