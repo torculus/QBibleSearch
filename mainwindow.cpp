@@ -88,21 +88,28 @@ void searchBible(Ui::MainWindow *ui) {
         QFile bible;
 
         // allow for selecting different translations
+        QRegularExpression web("WEB");
         QRegularExpression nheb("NHEB");
         QRegularExpression kjv("KJV");
 
         if (nheb.match(translation).hasMatch()) {
             // disable the Include Apocrypha section
-            ui->action_Include_Apocrypha->setVisible(false);
+            ui->action_Include_Apocrypha->setDisabled(true);
 
             bible.setFileName(":/bibles/NHEB.txt");
             translation = "NHEB";
         } else if (kjv.match(translation).hasMatch()) {
             // enable Apocrypha for KJV
-            ui->action_Include_Apocrypha->setVisible(true);
+            ui->action_Include_Apocrypha->setDisabled(false);
 
             bible.setFileName(":/bibles/KJV.txt");
             translation = "KJV";
+        } else if (web.match(translation).hasMatch()) {
+            // enable apocrypha for WEB
+            ui->action_Include_Apocrypha->setDisabled(false);
+
+            bible.setFileName(":/bibles/WEB.txt");
+            translation = "WEB";
         }
 
         if (!bible.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -119,31 +126,54 @@ void searchBible(Ui::MainWindow *ui) {
             QString line = s1.readLine();
 
             // find where the search term is a separate word
-            QRegularExpression re("(\\s|-)" + search_term + "(\\s|\\n|,|\\;|\\:|\\.|\\!|\\?|-)", \
+            QRegularExpression re("(\\s|-)" + search_term + "\\b", \
                                   QRegularExpression::CaseInsensitiveOption);
 
             QRegularExpressionMatch match = re.match(line);
 
             bool foundit = match.hasMatch();
 
+            /******************************** Search pattern logic *************************************/
+
             if (book == "Entire Bible") {
 
                 if (ui->action_Include_Apocrypha->isChecked()) {
                     // Catholic mode
-
-                    if (foundit) {
-                        verses.append(line);
-                        verses.append("\n\n");
-
-                        occurrences++;
-                    }
-                } else {
-                    // Protestant mode
-
                     std::pair <QString, int> value = getVerses(
-                                // exclude Apocryphal/Deuterocanonical books from the results
-// !!!!!!!!!!!!!!!!!!!!!!!!
-                                "[^(Tobit|Judith|Baruch)] [1-9]", line, foundit, occurrences);
+                                "(Genesis|Exodus|Leviticus|Numbers|Deuteronomy|"
+                                "Joshua|Judges|Ruth|[1-2] Samuel|[1-2] Kings|"
+                                "[1-2] Chronicles|Ezra|Nehemiah|Tobit|Judith|"
+                                "Esther|[1-2] Maccabees|Job|Psalm|Proverbs|"
+                                "Ecclesiastes|Song of Solomon|Wisdom|Sirach|"
+                                "Isaiah|Jeremiah|Lamentations|Baruch|Ezekiel|"
+                                "Daniel|Hosea|Joel|Amos|Obadiah|Jonah|Micah|"
+                                "Nahum|Habakkuk|Zephaniah|Haggai|Zechariah|"
+                                "Malachi|Matthew|Mark|Luke|John|Acts|Romans|"
+                                "[1-2] Corinthians|Galatians|Ephesians|"
+                                "Philippians|Colossians|[1-2] Thessalonians|"
+                                "[1-2] Timothy|Titus|Philemon|Hebrews|James|"
+                                "[1-2] Peter|[1-3] James|Jude|"
+                                "Revelation) [1-9]", line, foundit, occurrences);
+
+                    verses.append(value.first);
+                    occurrences = value.second;
+                } else {
+                    // Protestant mode, exclude Apocryphal/Deuterocanonical books from the results
+                    std::pair <QString, int> value = getVerses(
+                                "(Genesis|Exodus|Leviticus|Numbers|Deuteronomy|"
+                                "Joshua|Judges|Ruth|[1-2] Samuel|[1-2] Kings|"
+                                "[1-2] Chronicles|Ezra|Nehemiah|"
+                                "Esther|Job|Psalm|Proverbs|"
+                                "Ecclesiastes|Song of Solomon|"
+                                "Isaiah|Jeremiah|Lamentations|Ezekiel|"
+                                "Daniel|Hosea|Joel|Amos|Obadiah|Jonah|Micah|"
+                                "Nahum|Habakkuk|Zephaniah|Haggai|Zechariah|"
+                                "Malachi|Matthew|Mark|Luke|John|Acts|Romans|"
+                                "[1-2] Corinthians|Galatians|Ephesians|"
+                                "Philippians|Colossians|[1-2] Thessalonians|"
+                                "[1-2] Timothy|Titus|Philemon|Hebrews|James|"
+                                "[1-2] Peter|[1-3] James|Jude|"
+                                "Revelation) [1-9]", line, foundit, occurrences);
 
                     verses.append(value.first);
                     occurrences = value.second;
@@ -153,27 +183,32 @@ void searchBible(Ui::MainWindow *ui) {
 
                 if (ui->action_Include_Apocrypha->isChecked()) {
                     // Catholic mode
-
                     std::pair <QString, int> value = getVerses(
-                                "(Genesis|Exodus|Leviticus|Numbers|Deuteronomy|Joshua|Judges|Ruth|"
-// !!!!!!!!!!!!!!!!!!!!!!!!
-                                "[1-2] Samuel|[1-2] Kings|[1-2] Chronicles|Ezra|Nehemiah|Esther|Job|Psalm|"
-                                "Proverbs|Ecclesiastes|Song of Solomon|Isaiah|Jeremiah|Lamentations|Ezekiel|"
-                                "Daniel|Hosea|Joel|Amos|Obadiah|Jonah|Micah|Nahum|Habakkuk|Zephaniah|Haggai|"
-                                "Zechariah|Malachi) [1-9]", line, foundit, occurrences);
+                                "(Genesis|Exodus|Leviticus|Numbers|Deuteronomy|"
+                                "Joshua|Judges|Ruth|[1-2] Samuel|[1-2] Kings|"
+                                "[1-2] Chronicles|Ezra|Nehemiah|Tobit|Judith|"
+                                "Esther|[1-2] Maccabees|Job|Psalm|Proverbs|"
+                                "Ecclesiastes|Song of Solomon|Wisdom|Sirach|"
+                                "Isaiah|Jeremiah|Lamentations|Baruch|Ezekiel|"
+                                "Daniel|Hosea|Joel|Amos|Obadiah|Jonah|Micah|"
+                                "Nahum|Habakkuk|Zephaniah|Haggai|Zechariah|"
+                                "Malachi) [1-9]", line, foundit, occurrences);
 
                     verses.append(value.first);
                     occurrences = value.second;
 
                 } else {
                     // Protestant mode
-
                     std::pair <QString, int> value = getVerses(
-                                "(Genesis|Exodus|Leviticus|Numbers|Deuteronomy|Joshua|Judges|Ruth|"
-                                "[1-2] Samuel|[1-2] Kings|[1-2] Chronicles|Ezra|Nehemiah|Esther|Job|Psalm|"
-                                "Proverbs|Ecclesiastes|Song of Solomon|Isaiah|Jeremiah|Lamentations|Ezekiel|"
-                                "Daniel|Hosea|Joel|Amos|Obadiah|Jonah|Micah|Nahum|Habakkuk|Zephaniah|Haggai|"
-                                "Zechariah|Malachi) [1-9]", line, foundit, occurrences);
+                                "(Genesis|Exodus|Leviticus|Numbers|Deuteronomy|"
+                                "Joshua|Judges|Ruth|[1-2] Samuel|[1-2] Kings|"
+                                "[1-2] Chronicles|Ezra|Nehemiah|"
+                                "Esther|Job|Psalm|Proverbs|"
+                                "Ecclesiastes|Song of Solomon|"
+                                "Isaiah|Jeremiah|Lamentations|Ezekiel|"
+                                "Daniel|Hosea|Joel|Amos|Obadiah|Jonah|Micah|"
+                                "Nahum|Habakkuk|Zephaniah|Haggai|Zechariah|"
+                                "Malachi) [1-9]", line, foundit, occurrences);
 
                     verses.append(value.first);
                     occurrences = value.second;
@@ -181,10 +216,12 @@ void searchBible(Ui::MainWindow *ui) {
 
             } else if (book == "New Testament") {
 
+                // The New Testament is the same in both canons
                 std::pair <QString, int> value = getVerses(
-                            "(Matthew|Mark|Luke|John|Acts|Romans|[1-2] Corinthians|Galatians|"
-                            "Ephesians|Philippians|Colossians|[1-2] Thessalonians|[1-2] Timothy|"
-                            "Titus|Philemon|Hebrews|James|[1-2] Peter|[1-3] James|Jude|Revelation)"
+                            "(Matthew|Mark|Luke|John|Acts|Romans|[1-2] Corinthians|"
+                            "Galatians|Ephesians|Philippians|Colossians|"
+                            "[1-2] Thessalonians|[1-2] Timothy|Titus|Philemon|"
+                            "Hebrews|James|[1-2] Peter|[1-3] James|Jude|Revelation)"
                             " [1-9]", line, foundit, occurrences);
 
                 verses.append(value.first);
@@ -193,8 +230,8 @@ void searchBible(Ui::MainWindow *ui) {
             } else if (book == "Apocrypha/Deuterocanonical"){
 
                 std::pair <QString, int> value = getVerses(
-                            "(Tobit|Judith|Baruch|Wisdom|Sirach/Ecclesiasticus|1 Maccabees|2 Maccabees)"
-                            " [1-9]", line, foundit, occurrences);
+                            "(Tobit|Judith|[1-2] Maccabees|Wisdom|"
+                            "Sirach|Baruch) [1-9]", line, foundit, occurrences);
 
                 verses.append(value.first);
                 occurrences = value.second;
@@ -206,6 +243,8 @@ void searchBible(Ui::MainWindow *ui) {
                 verses.append(value.first);
                 occurrences = value.second;
             }
+
+            /***************************** End search pattern logic *************************************/
         }
 
         bible.close();
@@ -298,38 +337,42 @@ void MainWindow::on_actionQuit_triggered()
 
 void MainWindow::on_action_Include_Apocrypha_triggered()
 {
-    if (! ui->action_Include_Apocrypha->isChecked()) {
-        // hide apocrypha
-        ui->comboBox_2->removeItem(3);
 
-        for (int i=0; i<17; i++) {
-            // remove the apocrypha at the end
-            ui->comboBox_2->removeItem(72);
-        }
+    QComboBox *qcb = ui->comboBox_2;
 
-    } else {
+    if (ui->action_Include_Apocrypha->isChecked()) {
         // show apocrypha
-        ui->comboBox_2->insertItem(3, "Apocrypha/Deuterocanonical");
-
-        // separate the New Testament from the Apocrypha
-        ui->comboBox_2->insertSeparator(72);
+        qcb->insertItem(3, "Apocrypha/Deuterocanonical");
 
         // add in the Apocrypha/Deuterocanonical books
-        ui->comboBox_2->addItem("1 Esdras");
-        ui->comboBox_2->addItem("2 Esdras");
-        ui->comboBox_2->addItem("Tobit");
-        ui->comboBox_2->addItem("Judith");
-        ui->comboBox_2->addItem("Additions to Esther");
-        ui->comboBox_2->addItem("Wisdom");
-        ui->comboBox_2->addItem("Sirach/Ecclesiasticus");
-        ui->comboBox_2->addItem("Baruch");
-        ui->comboBox_2->addItem("Letter of Jeremiah");
-        ui->comboBox_2->addItem("Prayer of Azariah");
-        ui->comboBox_2->addItem("Susanna");
-        ui->comboBox_2->addItem("Bel and the Dragon");
-        ui->comboBox_2->addItem("Prayer of Manasseh");
-        ui->comboBox_2->addItem("1 Macabees");
-        ui->comboBox_2->addItem("2 Macabees");
+        qcb->insertItem(21, "Tobit");
+        qcb->insertItem(22, "Judith");
+        qcb->insertItem(24, "1 Maccabees");
+        qcb->insertItem(25, "2 Maccabees");
+        qcb->insertItem(31, "Wisdom");
+        qcb->insertItem(32, "Sirach");
+        qcb->insertItem(36, "Baruch");
+
+        // Eastern Orthodox books for possible future release
+        //qcb->addItem("Psalm 151");
+        //qcb->addItem("1 Esdras");
+        //qcb->addItem("2 Esdras");
+        //qcb->addItem("Prayer of Manasseh");
+        //qcb->addItem("3 Maccabees");
+        //qcb->addItem("4 Maccabees");
+
+    } else {
+        // remove Apocrypha/Deuterocanonical books
+        qcb->removeItem(36);
+        qcb->removeItem(32);
+        qcb->removeItem(31);
+        qcb->removeItem(25);
+        qcb->removeItem(24);
+        qcb->removeItem(22);
+        qcb->removeItem(21);
+
+        // hide apocrypha
+        qcb->removeItem(3);
     }
 }
 

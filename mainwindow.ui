@@ -38,6 +38,11 @@
        <widget class="QComboBox" name="comboBox">
         <item>
          <property name="text">
+          <string>WEB (World English Bible)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
           <string>NHEB (New Heart English Bible)</string>
          </property>
         </item>
@@ -427,19 +432,6 @@
     <property name="title">
      <string>File</string>
     </property>
-    <widget class="QMenu" name="menuEastern_Orthodox_Mode">
-     <property name="title">
-      <string>Eastern Orthodox Mode</string>
-     </property>
-     <addaction name="actionPsalm_151"/>
-     <addaction name="actionPrayer_of_Manasseh"/>
-     <addaction name="action1_Esdras"/>
-     <addaction name="action2_Esdras"/>
-     <addaction name="action3_Maccabees"/>
-     <addaction name="action4_Maccabees"/>
-    </widget>
-    <addaction name="actionCatholic_Mode"/>
-    <addaction name="menuEastern_Orthodox_Mode"/>
     <addaction name="action_Include_Apocrypha"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -465,41 +457,6 @@
    </property>
    <property name="text">
     <string>&amp;Include Apocrypha / Deuterocanon</string>
-   </property>
-  </action>
-  <action name="actionCatholic_Mode">
-   <property name="text">
-    <string>Catholic Mode</string>
-   </property>
-  </action>
-  <action name="actionPsalm_151">
-   <property name="text">
-    <string>Psalm 151</string>
-   </property>
-  </action>
-  <action name="actionPrayer_of_Manasseh">
-   <property name="text">
-    <string>Prayer of Manasseh</string>
-   </property>
-  </action>
-  <action name="action1_Esdras">
-   <property name="text">
-    <string>1 Esdras</string>
-   </property>
-  </action>
-  <action name="action2_Esdras">
-   <property name="text">
-    <string>2 Esdras</string>
-   </property>
-  </action>
-  <action name="action3_Maccabees">
-   <property name="text">
-    <string>3 Maccabees</string>
-   </property>
-  </action>
-  <action name="action4_Maccabees">
-   <property name="text">
-    <string>4 Maccabees</string>
    </property>
   </action>
  </widget>
